@@ -1,0 +1,16 @@
+- name: Just plays with variables
+  hosts: all
+  vars:
+    base_path: /srv/users/host1/mgmt/sys/users
+    users:
+      joe:
+        name: Joe Foo
+        home: "{{ base_path }}/joe"
+      bob:
+        name: Bob Bar
+        home: "{{ base_path }}/bob"
+
+  tasks:
+  - name: Print user details records
+    debug: msg="User {{ item.key }} full name is {{ item.value.name }}. Home is {{ item.value.home }}"
+    with_dict: "{{users}}"

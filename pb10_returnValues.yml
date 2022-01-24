@@ -1,0 +1,73 @@
+#Ansible Return Values
+#Ansible modules normally return data structure that can be:
+#
+#Registered into variable
+#Seen directly when output by Ansible
+#Optionally, module can document unique return values
+#Viewable using ansible-doc
+#
+#Value
+#Description
+#changed
+#
+#Boolean indicating if task had to make changes
+#
+#failed
+#
+#Boolean indicating if task failed
+#
+#msg
+#
+#String with generic message relayed to user
+#
+#results
+#
+#Indicates:
+#
+#Loop was present for task
+#
+#It contains list of normal module result per item
+#
+#stderr
+#
+#Contains error output of command-line utilities
+#
+#Utilities executed by some modules to run commands
+#
+#Examples: raw, shell, command
+#
+#ansible_facts
+#
+#Contains dictionary appended to facts assigned to host
+#
+#Facts are directly accessible
+#
+#Registered variable not required
+#
+#warnings
+#
+#Contains list of strings presented to user
+#
+#deprecations
+#
+#Key containing list of dictionaries presented to user
+#
+#Dictionary keys: msg, version
+#
+#Values: String
+#
+#Value for version key can be empty string
+- hosts: localhost
+  gather_facts: true
+  connection: local
+  tasks:
+  - name: Check connectivity if OS is "MacOSX"
+    ping:
+    when: ansible_distribution == "MacOSX"
+  - name: Check connectivity if OS is windows
+    win_ping:
+    when: ansible_distribution == "Windows"
+  - name: Install package
+    yum:
+     name: httpd
+     state: latest

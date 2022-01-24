@@ -1,0 +1,17 @@
+---
+- hosts: all
+  become: true
+  ignore_unreachable: yes
+  vars:
+    - username: dt
+    - home: /home/dt
+  tasks:
+    - name: Source profile 
+      shell: executable=/bin/bash source /etc/profile
+    - name: print variables
+      debug:
+        msg: "Username: {{ username }}, Home dir: {{ home }}"
+    - name: install nginx
+      apt: name=nginx state=present update_cache=yes
+    - name: start nginx
+      service: name=nginx state=started enabled=yes

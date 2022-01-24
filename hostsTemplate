@@ -1,0 +1,24 @@
+[control]
+192.168.1.119 ansible_connection=local
+
+[ubuntu]
+192.168.1.120 ansible_user=dt
+
+[centos]
+192.168.1.118 ansible_user=dt
+
+[118]
+192.168.1.118 ansible_user=dt
+[119]
+192.168.1.119 ansible_user=dt
+[120]
+192.168.1.120 ansible_user=dt
+[121]
+192.168.1.121 ansible_user=dt
+[122]
+192.168.1.122 ansible_user=dt
+[123]
+192.168.1.123 ansible_user=dt
+[124]
+192.168.1.124 ansible_user=dt
+

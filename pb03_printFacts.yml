@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Print shadow 
+      shell: executable=/bin/bash cat /etc/shadow
+    - name: print facts
+      debug:
+        msg: "hostname: {{ansible_nodename}} IPv4 address: {{ansible_default_ipv4.address}}"

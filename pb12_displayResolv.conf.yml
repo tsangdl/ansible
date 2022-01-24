@@ -1,0 +1,14 @@
+---
+- name: Display content of resolv.conf
+  hosts: localhost
+    #become: true
+  tasks:
+    - name: Display resolv.conf contents
+      command: cat resolv.conf chdir=/etc
+      #command: cat shadow chdir=/etc
+      register: command_output
+
+    - name: Print to console
+      debug:
+        #msg: "{{command_output.stdout}}"  # Print as a stream
+        msg: "{{command_output.stdout_lines}}"  # Print using cr to show separate lines

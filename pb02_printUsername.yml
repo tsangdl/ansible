@@ -1,0 +1,13 @@
+---
+- hosts: all
+  ignore_unreachable: yes
+  vars:
+    - username: dt
+    - home: /home/dt
+  tasks:
+    - name: Source profile 
+      shell: executable=/bin/bash source /etc/profile
+    - name: print variables
+      debug:
+        msg: "Username: {{ username }}, Home dir: {{ home }}"
+      ignore_unreachable: yes
