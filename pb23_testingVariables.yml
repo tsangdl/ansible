@@ -1,0 +1,29 @@
+---
+- hosts: app1
+
+  vars:
+      http_port: 8080
+      default_gateway: 10.200.50.1
+      vlans:
+        id: 10
+        port: 20
+      system_configs:
+        default_gateway_ip: “{{ default_gateway }}“ # references another var
+
+  tasks:
+  - name: Setup a temporary variable
+    debug:
+      msg: 
+        - default_gateway_ip = {{ system_configs.default_gateway_ip }} 
+        - vlans info: id = {{ vlans['id'] }}, port = {{ vlans.port }}
+
+  #- name: Configure default gateway
+  #  system_configs:
+  #    default_gateway_ip: “{{ default_gateway  }}“
+
+  #- name: Label port on vlan 10
+  #  vlan_config:
+  #    vlan_id: “{{ vlans[‘id’]  }}“
+  #    port_id: "1/1/ {{ vlans[‘port’] }}"
+
+# {{ ansible_facts["eth0"]["ipv4"]["address"] }}

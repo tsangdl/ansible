@@ -1,0 +1,40 @@
+---
+- hosts: app2
+  become: true
+  vars:
+    puppet_services
+    - puppet
+    - puppetserver
+
+  tasks:
+
+  # Uses system facts to check
+  - name: collect facts about system services
+    service_facts:
+    register: services_state
+
+  - name: Debug
+    debug:
+      var: services_state
+
+  # Alternate way to check
+  - name: Check if puppet services are running. check_mode just displays
+    ansible.builtin.service:
+      name: "{{ item }}"
+      state: started
+    with_items:
+    {{ puppet_services }}
+    check_mode: yes        
+
+  #- name: Check if the puppet agent service is running
+  #  ansible.builtin.service:
+  #    name: puppet
+  #    state: started
+  #  check_mode: yes        
+
+  #- name: Check if puppet server service is running
+  #  ansible.builtin.service:
+  #    name: puppetserver
+  #    state: started
+  #  check_mode: yes        
+

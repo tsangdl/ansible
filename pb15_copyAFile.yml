@@ -1,0 +1,17 @@
+---
+- hosts: localhost
+  #become: true
+  gather_facts: no
+  tasks:
+#    - name: copy file from local host to remote host (relative path, ./files/)
+#      copy:
+#        src: test_file
+#        dest: $HOME/01ansible/ansible/test_file3
+    - name: Print passwd 
+      shell: executable=/bin/bash cat /etc/passwd
+      register: passwd
+
+    - name: print variable
+      debug:
+#        msg: "hostname: {{ansible_nodename}} IPv4 address: {{ansible_default_ipv4.address}}"
+        var: passwd

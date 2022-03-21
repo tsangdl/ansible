@@ -1,0 +1,64 @@
+---
+- hosts: multi
+  become: true
+  vars:
+    - pkgagent: puppet-agent
+    - pkgserver: puppetserver
+  tasks:
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+#  - name: Print the package facts
+#    ansible.builtin.debug:
+#      var: ansible_facts.packages
+
+  - name: Check whether the puppet agent is installed
+    ansible.builtin.debug:
+      msg: "{{ ansible_facts.packages['puppet-agent'] | length }} versions of {{ pkgagent }} are installed!"
+      #msg: "{{ ansible_facts.packages | map(\"extract\", name) | flatten | list | length }} versions of {{ pkgagent }} are installed!"
+      #msg: "{{ ansible_facts.packages | map(attribute='name') | flatten | list | length }} versions of {{ pkgagent }} are installed!"
+    when: "'puppet-agent' in ansible_facts.packages"
+
+  - name: Package Not found
+    debug:
+      msg: "Package {{ pkgagent }} Not found"
+    when: "'puppet-agent' not in ansible_facts.packages"
+
+  - name: Check whether the puppet server is installed
+    ansible.builtin.debug:
+      msg: "{{ ansible_facts.packages['puppetserver'] | length }} versions of {{ pkgserver }} are installed!"
+      #msg: "{{ ansible_facts.packages | map(\"extract\", name) | flatten | list | length }} versions of {{ pkgserver }} are installed!"
+      #msg: "{{ ansible_facts.packages | map(attribute='name') | flatten | list | length }} versions of {{ pkgserver }} are installed!"
+    when: "'puppetserver' in ansible_facts.packages"
+
+  - name: Package Not found
+    debug:
+      msg: "Package {{ pkgserver }} Not found"
+    when: "'puppetserver' not in ansible_facts.packages"
+
+- name: Ensure Puppet service is started and enabled at boot.
+  service:
+    name: "{{ puppet_service }}"
+    state: "{{ puppet_service_state }}"
+    enabled: "{{ puppet_service_enabled }}"
+  when: puppet_service_manage
+
+#- name: Add Puppet bin directory to $PATH.
+#  lineinfile: >
+#    dest=/etc/environment
+#    state=present
+#    backrefs=yes
+#    regexp='PATH=(["]*)((?!.*?{{ puppet_bin_path }}).*?)(["]*)$'
+#    line="PATH=\1\2:{{ puppet_bin_path }}\3"
+#    mode=0644
+
+#
+#Your talk of [] means you are expecting devices to in fact be a list of group names, in which case you'll want the | extract filter to apply [groups[g_name] for g_name in devices] (regrettably jinja2 does not understand list comprehensions like that). Then, because each extract run will itself be a list[str], meaning the output will be list[list[str]], but you want just list[str], you'll apply the |flatten to fold them up to one list
+#
+#- debug:
+#    msg: >-
+#      all hosts in devices are: {{ devices | map("extract", groups) | flatten | list }}
+#  vars:
+#    devices:
+#    - webservers

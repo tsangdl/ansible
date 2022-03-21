@@ -1,0 +1,34 @@
+---
+- name: Setup an ubuntu 20.04 with gui to xserver on windows 10
+  hosts: app2
+  become: true
+
+  tasks:
+    - name: Add an env var to the remote user's shell
+      lineinfile:
+        dest: "/etc/environment"
+        regexp: '^ENV_VAR='
+        line: 'ENV_VAR=value'  
+
+    - name: Get the value of an environment variable    
+      shell: '. ~/.bash_profile && echo $ENV_VAR'
+      register: foo
+      become: false
+
+    - debug: msg="The variable is {{ foo.stdout }}"
+
+
+#---
+#- name: Display content of resolv.conf
+#  hosts: localhost
+#    #become: true
+#  tasks:
+#    - name: Display resolv.conf contents
+#      command: cat resolv.conf chdir=/etc
+#      #command: cat shadow chdir=/etc
+#      register: command_output
+#
+#    - name: Print to console
+#      debug:
+#        #msg: "{{command_output.stdout}}"  # Print as a stream
+#        msg: "{{command_output.stdout_lines}}"  # Print using cr to show separate lines

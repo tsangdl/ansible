@@ -1,0 +1,9 @@
+---
+- name: Install Puppet
+  #hosts: tag_srv_tag_os_rhel74
+  hosts: app2
+  gather_facts: false
+  become: true
+  tasks:
+    - import_role:
+       name: puppet_standalone

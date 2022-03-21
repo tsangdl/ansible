@@ -1,0 +1,78 @@
+---
+- hosts: app2
+  become: true
+  vars:
+    - pkg: puppet-agent
+  tasks:
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+#  - name: Print the package facts
+#    ansible.builtin.debug:
+#      var: ansible_facts.packages
+
+  - name: List the packages
+    vars:
+      pkg1: yum
+    debug:
+      #msg: "{{ ansible_facts.packages['zlib'] | length }} versions of the package are installed!"
+      #msg: "{{ ansible_facts.packages.yum2 | length }} versions of the package are installed!"
+      msg: "{{ ansible_facts.packages.{{ pkg1 }} }} !"
+    when: "'yum' in ansible_facts.packages"
+
+  - name: Package Not found
+    vars:
+      pkg2: yum
+    debug:
+      msg: "Package {{ pkg2 }} Not found"
+    when: "'yum' not in ansible_facts.packages"
+
+  #- name: Check whether a package is installed
+  #  ansible.builtin.debug:
+  #    #msg: "puppet packages are installed!"
+  #    ##msg: "{{ ansible_facts.packages['puppet-agent'] | length }} versions of {{ pkg }} are installed!"
+  #    #msg: "{{ ansible_facts.packages | type_debug }} !"   # type_debug describes the data type returned
+  #    #msg: "{{ ansible_facts.packages  | map(\"extract\",ansible_facts.packages)}} !" 
+  #    #msg: "{{ ansible_facts.packages | map(attribute='msg') }} !" # doesnt work
+  #    #msg: "{{ ansible_facts.packages[item] }} !"  
+  #    #msg: "{{ item.key }} - {{ item.value }}"
+  #    msg: "{{ item.key }}"
+  #  loop: "{{ ansible_facts.packages | dict2items }}"  # The list of items to loop through
+  #  register: pkg_list
+  #  no_log: yes
+  #  #when: item in ansible_facts.packages
+
+      #msg: "{{ ansible_facts.packages | map(\"extract\", name) | flatten | list | length }} versions of {{ pkg }} are installed!"
+      #msg: "{{ ansible_facts.packages | map(attribute='name') | flatten | list | length }} versions of {{ pkg }} are installed!"
+      #msg: "{{ [0] | map(\"extract\",ansible_facts.packages) | flatten | list | length }} versions of {{ pkg }} are installed!"
+    #when: "'puppet-agent' in ansible_facts.packages"
+    #when: ansible_facts.packages is match("*puppet*")
+    #when: item is match("*puppet*")
+    #
+    #{{ ansible_facts["eth0"]["ipv4"]["address"] }}
+
+#    - package_facts:
+#    - debug:
+#        msg: "{{ ansible_facts.packages[item] }}"
+#      loop: "{{ target_packages }}"
+#      when: item in ansible_facts.packages
+
+#debug:
+#msg: "{{ ansible_hostname }}"
+#when: ansible_facts.packages is match("*java*")
+
+#  - name: Package Not found
+#    debug:
+#      msg: "Package {{ pkg }} Not found"
+#    when: "'puppet-agent' not in ansible_facts.packages"
+
+#
+#Your talk of [] means you are expecting devices to in fact be a list of group names, in which case you'll want the | extract filter to apply [groups[g_name] for g_name in devices] (regrettably jinja2 does not understand list comprehensions like that). Then, because each extract run will itself be a list[str], meaning the output will be list[list[str]], but you want just list[str], you'll apply the |flatten to fold them up to one list
+#
+#- debug:
+#    msg: >-
+#      all hosts in devices are: {{ devices | map("extract", groups) | flatten | list }}
+#  vars:
+#    devices:
+#    - webservers

@@ -1,0 +1,26 @@
+---
+- hosts: app2
+  become: yes # Needed in this play for inventory_hostname
+
+  tasks:
+  # The most convenient way I found to print multi-line text with debug is:
+
+  - name: Print several lines of text
+    vars:
+      msg: |
+         This is the first line.
+         This is the second line with a variable like {{ inventory_hostname }}.
+         And here could be more...
+    debug:
+      msg: "{{ msg.split('\n') }}"
+
+#  It splits the message up into an array and debug prints each line as a string. The output is:
+#
+#  ok: [example.com] => {
+#      "msg": [
+#          "This is the first line.", 
+#          "This is the second line with a variable like example.com", 
+#          "And here could be more...", 
+#          ""
+#      ]
+#  }

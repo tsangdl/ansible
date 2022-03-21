@@ -1,0 +1,32 @@
+---
+- name: install the puppet rpm from a remote repo
+  yum:
+    name: https://yum.puppet.com/puppet-release-el-8.noarch.rpm
+    state: present
+    use_backend: dnf
+
+- name: Set puppetlabs.repo's puppetlabs-devel section enabled to 1
+  ini_file:
+    path: /etc/yum.repos.d/puppetlabs.repo
+    section: puppetlabs-devel
+    option: enabled
+    value: 1
+    create: no
+    backup: no
+
+- name: Install puppet
+  yum:
+    name: "{{ item }}"
+  with_items:
+    - puppetserver
+    - puppet
+
+- name: Start puppet
+  systemd:
+    name: puppet
+    state: started
+
+- name: Enable puppet
+  systemd:
+    name: puppet
+    enabled: yes

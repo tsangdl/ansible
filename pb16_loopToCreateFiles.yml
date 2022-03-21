@@ -1,0 +1,29 @@
+---
+#- hosts: all
+- hosts: localhost
+  #become: true
+  gather_facts: no
+  tasks:
+    - name: create files
+      file:
+        path: "~/{{item.name}}"
+        state: touch
+        mode: "{{item.perm}}"
+      with_items:
+      - {name: file1, perm: "0777"}
+      - {name: file2, perm: "0644"}
+    - name: Find the created files
+      find:
+        paths: /home/dt
+        file_type: file
+        patterns: 'file*'
+      register: files_matched
+    - name: Print results
+      debug:
+        msg: "{{ files_matched.files }}"  # All files found
+        #msg: "{{ files_matched }}"  # Just the first file found
+        #msg: "{{ files_matched.files[0].path }}"  # The path of just the first file
+        #msg: "{{ files_matched.files[*].path }}" 
+        #var: "{{ items.path }}" 
+      #with_items:
+        #- 

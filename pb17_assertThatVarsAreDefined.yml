@@ -1,0 +1,13 @@
+---                                                                                                                          
+# example of asserting that vars are defined with_items
+- hosts: localhost
+  ignore_errors: yes
+  vars:
+    foo: bar
+  tasks:
+  - assert: { that: "{{ item }} is defined" }
+    with_items: 
+      - foo
+      - bar
+      - abc
+      - def

@@ -1,0 +1,18 @@
+---
+- name: Test env vars
+  hosts: app2
+  become: true
+
+  tasks:
+    - name: Add an env var to the remote user's shell
+      lineinfile:
+        dest: "/etc/environment"
+        regexp: '^ENV_VAR='
+        line: 'ENV_VAR=value'  
+
+    - name: Get the value of an environment variable    
+      shell: '. ~/.bash_profile && echo $ENV_VAR'
+      register: foo
+      become: false
+
+    - debug: msg="The variable is {{ foo.stdout }}"
